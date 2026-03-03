@@ -5,10 +5,9 @@ import com.project.api.ecommerce.dto.ImagemResponseDTO;
 import com.project.api.ecommerce.service.ImagemService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,13 +19,12 @@ public class ImagemController implements ImagemControllerOpenApi {
 
     private final ImagemService imagemService;
 
-    private static final Logger logger = LoggerFactory.getLogger( ImagemController.class );
-
     public ImagemController(ImagemService imagemService) {
         this.imagemService = imagemService;
     }
 
     @PostMapping("/produtos/{idProduto}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ImagemResponseDTO>> uploadImagens(
             @PathVariable @Positive( message = "Deve informar um produto" ) Long idProduto,
             @RequestParam("files") @NotEmpty( message = "Deve ser fornecido os arquivos" ) MultipartFile[] files )
@@ -37,11 +35,13 @@ public class ImagemController implements ImagemControllerOpenApi {
     }
 
     @GetMapping("{idImagem}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Resource> downloadImagem( @PathVariable Long idImagem ) {
         return imagemService.downloadImagem( idImagem );
     }
 
     @PutMapping("{idImagem}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ImagemResponseDTO> alterarImagem(
             @PathVariable Long idImagem,
             @RequestParam("file") MultipartFile file ) {
@@ -49,6 +49,7 @@ public class ImagemController implements ImagemControllerOpenApi {
     }
 
     @DeleteMapping( "{idImagem}" )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletarImagem( @PathVariable Long idImagem ) {
         imagemService.deleteImagemById( idImagem );
         return ResponseEntity.noContent().build();

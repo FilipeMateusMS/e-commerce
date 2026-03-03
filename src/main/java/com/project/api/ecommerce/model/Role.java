@@ -32,6 +32,10 @@ public class Role {
         this.nome = nome;
     }
 
+    public Role( String nome) {
+        this.nome = nome;
+    }
+
     public Collection<Usuario> getUsuarios() {
         return usuarios;
     }

@@ -30,7 +30,7 @@ public class JacksonConfig {
         return builder -> {
             // Desativa a escrita de datas como arrays/timestamps
             builder.featuresToDisable( SerializationFeature.WRITE_DATES_AS_TIMESTAMPS );
-            // Opcional: define um formato padrão global
+            // Define um formato padrão global
             builder.simpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss" );
         };
     }

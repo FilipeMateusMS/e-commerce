@@ -4,24 +4,15 @@ import com.project.api.ecommerce.dto.PedidoDTO;
 import com.project.api.ecommerce.dto.UsuarioResponseDTO;
 import com.project.api.ecommerce.model.Pedido;
 import com.project.api.ecommerce.model.Usuario;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-@Component
-public class PedidoMapper {
+@Mapper( componentModel = "spring", uses = { UsuarioMapper.class } )
+public interface PedidoMapper {
 
-    public PedidoDTO toDTO(Pedido pedido) {
-        Usuario usuario = pedido.getUsuario();
-        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail());
+    @Mapping(target = "usuario", source = "usuario")
+    @Mapping(target = "itensPedidos", source = "itensPedidos")
+    PedidoDTO toDTO(Pedido pedido);
 
-        return new PedidoDTO(
-                pedido.getId(),
-                usuarioResponseDTO,
-                pedido.getItensPedidos(),
-                pedido.getPedidoStatus(),
-                pedido.getPrecoVendaTotal(),
-                pedido.getDataPedido() );
-    }
 }

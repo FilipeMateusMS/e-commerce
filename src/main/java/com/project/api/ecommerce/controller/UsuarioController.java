@@ -6,11 +6,10 @@ import com.project.api.ecommerce.service.UsuarioService;
 import com.project.api.ecommerce.dto.UsuarioRequestDTO;
 import com.project.api.ecommerce.dto.UsuarioResponseDTO;
 import com.project.api.ecommerce.dto.UsuarioUpdateRequestDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,23 +19,24 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
     private final UsuarioService usuarioService;
 
-    private static final Logger logger = LoggerFactory.getLogger( UsuarioController.class );
-
     public UsuarioController( UsuarioService usuarioService, PasswordEncoder passwordEncoder ) {
         this.usuarioService = usuarioService;
     }
 
     @GetMapping( "/{id}" )
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UsuarioResponseDTO> getUsuarioById(@PathVariable Long id ) {
         return ResponseEntity.ok( usuarioService.findUsuarioById( id ) );
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageResponse<UsuarioResponseDTO>> getAllUsuarios(Pageable pageable ) {
         return ResponseEntity.ok( usuarioService.findAllUsuario( pageable) );
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> insertUsuario( @RequestBody UsuarioRequestDTO usuarioRequestDTO ) {
         return ResponseEntity.status( HttpStatus.CREATED ).body( usuarioService.criarUsuario( usuarioRequestDTO ) );
     }
@@ -47,6 +47,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @DeleteMapping( "/{id}" )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletarUsuario( @PathVariable Long id ){
         usuarioService.deletarUsuario( id );
         return ResponseEntity.noContent().build();

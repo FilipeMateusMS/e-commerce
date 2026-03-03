@@ -2,22 +2,12 @@ package com.project.api.ecommerce.mappers;
 
 import com.project.api.ecommerce.dto.CarrinhoItemResponseDTO;
 import com.project.api.ecommerce.model.CarrinhoItem;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class CarrinhoItemMapper {
+@Mapper(componentModel = "spring", uses = ProdutoMapper.class)
+public interface CarrinhoItemMapper {
 
-    private ProdutoMapper produtoMapper;
-
-    public CarrinhoItemMapper(ProdutoMapper produtoMapper) {
-        this.produtoMapper = produtoMapper;
-    }
-
-    public CarrinhoItemResponseDTO toDTO(CarrinhoItem carrinhoItem) {
-        return new CarrinhoItemResponseDTO(
-                carrinhoItem.getId(),
-                produtoMapper.toDTO( carrinhoItem.getProduto() ),
-                carrinhoItem.getQuantidade(),
-                carrinhoItem.calcularPrecoItem() );
-    }
+    @Mapping(target = "precoTotalItem", expression = "java(carrinhoItem.calcularPrecoItem())")
+    CarrinhoItemResponseDTO toDTO(CarrinhoItem carrinhoItem);
 }

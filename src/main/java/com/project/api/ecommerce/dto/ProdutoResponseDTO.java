@@ -7,6 +7,6 @@ public record ProdutoResponseDTO(
             String nome,
             String marca,
             String descricao,
-            BigDecimal preco,
+            BigDecimal precoUnitario,
             Integer quantidade,
             CategoriaProdutoResponseDTO categoria ) {}

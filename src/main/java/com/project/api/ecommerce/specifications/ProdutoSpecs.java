@@ -59,27 +59,21 @@ public class ProdutoSpecs {
         if (dto.nome() != null && !dto.nome().isEmpty()) {
             spec = spec.and(nomeContem(dto.nome()));
         }
-
         if (dto.marca() != null && !dto.marca().isEmpty()) {
             spec = spec.and(marcaContem(dto.marca()));
         }
-
         if (dto.descricao() != null && !dto.descricao().isEmpty()) {
             spec = spec.and(descricaoContem(dto.descricao()));
         }
-
         if (dto.preco() != null) {
             spec = spec.and(precoMaiorQue(dto.preco()));
         }
-
         if (dto.quantidade() != null) {
             spec = spec.and(quantidadeMaiorQue(dto.quantidade()));
         }
-
         if (dto.nomeCategoria() != null) {
             spec = spec.and(categoriaIgual(dto.nomeCategoria()));
         }
-
         return spec;
     }
 }

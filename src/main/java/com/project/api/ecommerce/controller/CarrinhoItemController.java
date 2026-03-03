@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,12 +24,14 @@ public class CarrinhoItemController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<CarrinhoItemResponseDTO> upsertCarrinho(
             @Valid @RequestBody CarrinhoItemRequestDTO dto ){
         return ResponseEntity.ok( carrinhoItemService.upsertItemNoCarrinho( dto ) );
     }
 
     @PutMapping( "/{id}" )
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<CarrinhoItemResponseDTO> alterarQuantidadeDeItens(
             @PathVariable Long id,
             @Valid @RequestBody CarrinhoItemUpdateDTO carrinhoItemUpdateDTO ){
@@ -36,6 +39,7 @@ public class CarrinhoItemController {
     }
 
     @DeleteMapping( "/{id}" )
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Void> removerItemDoCarrinho( @PathVariable Long id ){
         carrinhoItemService.removerItemDoCarrinho( id );
         return ResponseEntity.noContent().build();
