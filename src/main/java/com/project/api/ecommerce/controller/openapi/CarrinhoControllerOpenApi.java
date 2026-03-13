@@ -1,6 +1,6 @@
 package com.project.api.ecommerce.controller.openapi;
 
-import com.project.api.ecommerce.dto.CarrinhoResponseDTO;
+import com.project.api.ecommerce.dto.response.CarrinhoResponseDTO;
 import com.project.api.ecommerce.pagination.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

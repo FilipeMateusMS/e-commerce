@@ -1,8 +1,8 @@
 package com.project.api.ecommerce.controller.openapi;
 
-import com.project.api.ecommerce.dto.ProdutoRequestDTO;
-import com.project.api.ecommerce.dto.ProdutoResponseDTO;
-import com.project.api.ecommerce.dto.ProdutoSearchDTO;
+import com.project.api.ecommerce.dto.request.ProdutoRequestDTO;
+import com.project.api.ecommerce.dto.response.ProdutoResponseDTO;
+import com.project.api.ecommerce.dto.filters.ProdutoFilterDTO;
 import com.project.api.ecommerce.pagination.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,7 +28,7 @@ public interface ProdutoControllerOpenApi {
     @Operation(summary = "Lista produtos com filtros avançados e paginação")
     @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso")
     ResponseEntity<PageResponse<ProdutoResponseDTO>> findAllProdutosFiltrados(
-            @ParameterObject ProdutoSearchDTO produtoSearch,
+            @ParameterObject ProdutoFilterDTO produtoSearch,
             @ParameterObject Pageable pageable);
 
     @Operation(summary = "Cadastra um novo produto")

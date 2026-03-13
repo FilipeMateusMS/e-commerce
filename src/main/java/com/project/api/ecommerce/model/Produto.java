@@ -1,11 +1,19 @@
 package com.project.api.ecommerce.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Produto {
 
@@ -39,9 +47,6 @@ public class Produto {
     )
     private List<Imagem> imagens = new ArrayList<>();;
 
-    public Produto() {
-    }
-
     public Produto(String nome, String marca, String descricao, BigDecimal precoUnitario, Integer quantidade, Categoria categoria) {
         this.nome = nome;
         this.marca = marca;
@@ -49,69 +54,5 @@ public class Produto {
         this.precoUnitario = precoUnitario;
         this.quantidade = quantidade;
         this.categoria = categoria;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getPrecoUnitario() {
-        return precoUnitario;
-    }
-
-    public void setPrecoUnitario(BigDecimal precoUnitario) {
-        this.precoUnitario = precoUnitario;
-    }
-
-    public Integer getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public List<Imagem> getImagens() {
-        return imagens;
-    }
-
-    public void setImagens(List<Imagem> imagens) {
-        this.imagens = imagens;
     }
 }

@@ -1,6 +1,6 @@
 package com.project.api.ecommerce.specifications;
 
-import com.project.api.ecommerce.dto.ProdutoSearchDTO;
+import com.project.api.ecommerce.dto.filters.ProdutoFilterDTO;
 import com.project.api.ecommerce.model.Produto;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -53,7 +53,7 @@ public class ProdutoSpecs {
                 builder.conjunction();
     }
 
-    public static Specification<Produto> buildFromFilter(ProdutoSearchDTO dto) {
+    public static Specification<Produto> buildFromFilter(ProdutoFilterDTO dto) {
         Specification<Produto> spec = Specification.where( emptySpec() );
 
         if (dto.nome() != null && !dto.nome().isEmpty()) {

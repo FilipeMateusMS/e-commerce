@@ -1,6 +1,7 @@
 package com.project.api.ecommerce.security.user;
 
 import com.project.api.ecommerce.model.Usuario;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,43 +10,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ShopUsuarioDetails implements UserDetails {
 
     private Long id;
     private String email;
     private String password;
     private Collection<GrantedAuthority> authorities;
-
-    public ShopUsuarioDetails(Long id, String email, String password, Collection<GrantedAuthority> authorities) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setAuthorities(Collection<GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
 
     public static ShopUsuarioDetails buildUserDetails(Usuario usuario ){
         List<GrantedAuthority> authorities = usuario.getRoles()
@@ -59,7 +33,6 @@ public class ShopUsuarioDetails implements UserDetails {
                 usuario.getSenha(),
                 authorities );
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

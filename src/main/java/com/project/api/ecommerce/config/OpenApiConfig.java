@@ -18,7 +18,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("API de E-commerce")
                         .version("v1.0")
-                        .description("Documentação completa dos endpoints do sistema.")
+                        .description("Documentação completa dos endpoints do sistema de vendas online")
                         .contact(new Contact()
                                 .name("Filipe Mateus")
                                 .email("filipedesousademedeiros@gmail.com" ) ) )

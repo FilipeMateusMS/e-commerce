@@ -1,8 +1,8 @@
 package com.project.api.ecommerce.controller.openapi;
 
-import com.project.api.ecommerce.dto.UsuarioRequestDTO;
-import com.project.api.ecommerce.dto.UsuarioResponseDTO;
-import com.project.api.ecommerce.dto.UsuarioUpdateRequestDTO;
+import com.project.api.ecommerce.dto.request.UsuarioRequestDTO;
+import com.project.api.ecommerce.dto.response.UsuarioResponseDTO;
+import com.project.api.ecommerce.dto.request.UsuarioUpdateRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,11 +20,11 @@ public interface UsuarioControllerOpenApi {
             @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
             @ApiResponse(responseCode = "404", description = "Usuário não localizado", content = @Content)
     })
-    ResponseEntity<UsuarioResponseDTO> getUsuarioById(@Parameter(description = "ID do usuário") Long id);
+    ResponseEntity<UsuarioResponseDTO> getUsuarioById( @Parameter( description = "ID do usuário") Long id );
 
     @Operation(summary = "Cadastra um novo usuário no sistema")
     @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso")
-    ResponseEntity<UsuarioResponseDTO> insertUsuario(@RequestBody UsuarioRequestDTO usuarioRequestDTO);
+    ResponseEntity<UsuarioResponseDTO> insertUsuario( @RequestBody UsuarioRequestDTO usuarioRequestDTO );
 
     @Operation(summary = "Atualiza dados de um usuário existente")
     @ApiResponse(responseCode = "200", description = "Usuário atualizado")

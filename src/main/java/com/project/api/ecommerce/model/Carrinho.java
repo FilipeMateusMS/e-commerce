@@ -1,12 +1,17 @@
 package com.project.api.ecommerce.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Carrinho {
 
     @Id
@@ -20,43 +25,11 @@ public class Carrinho {
     @JoinColumn( name= "usuario_id", nullable = false, unique = true )// Cada usuário pode ter somente um carrinho
     private Usuario usuario;
 
-    public Carrinho(Long id, Set<CarrinhoItem> itensCarrinho) {
-        this.id = id;
-        this.itensCarrinho = itensCarrinho;
-    }
-
-    public Carrinho() {
-    }
-
     public BigDecimal calcularValorTotal() {
         BigDecimal valorSoma = BigDecimal.ZERO;
         for (CarrinhoItem item : itensCarrinho) {
             valorSoma = valorSoma.add( item.getProduto().getPrecoUnitario().multiply( BigDecimal.valueOf( item.getQuantidade() ) ) );
         }
         return valorSoma;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Set<CarrinhoItem> getItensCarrinho() {
-        return itensCarrinho;
-    }
-
-    public void setItensCarrinho(Set<CarrinhoItem> itensCarrinho) {
-        this.itensCarrinho = itensCarrinho;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 }

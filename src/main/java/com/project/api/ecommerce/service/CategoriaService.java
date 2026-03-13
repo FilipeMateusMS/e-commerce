@@ -1,16 +1,18 @@
 package com.project.api.ecommerce.service;
 
-import com.project.api.ecommerce.dto.CategoriaCreateRequestDTO;
-import com.project.api.ecommerce.dto.CategoriaUpdateRequestDTO;
+import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
+import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
 import com.project.api.ecommerce.model.Produto;
 import com.project.api.ecommerce.pagination.PageResponse;
 import com.project.api.ecommerce.repository.ProdutoRepository;
-import com.project.api.ecommerce.dto.CategoriaResponseDTO;
+import com.project.api.ecommerce.dto.response.CategoriaResponseDTO;
 import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.CategoriaMapper;
 import com.project.api.ecommerce.model.Categoria;
 import com.project.api.ecommerce.repository.CategoriaRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,19 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
     private final CategoriaMapper categoriaMapper;
     private final ProdutoRepository produtoRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger( CategoriaService.class );
-
-    public CategoriaService( CategoriaRepository categoriaRepository, CategoriaMapper categoriaMapper, ProdutoRepository produtoRepository ) {
-        this.categoriaRepository = categoriaRepository;
-        this.categoriaMapper = categoriaMapper;
-        this.produtoRepository = produtoRepository;
-    }
 
     public CategoriaResponseDTO findCategoriaById(Long id) {
         return categoriaMapper.toDTO( categoriaRepository.findById( id )

@@ -5,6 +5,8 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,15 +21,15 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class JwtUtils {
 
-    @Value( "${auth.token.jwtSecret}" )
+    @Value( "${app.auth.token.jwtSecret}" )
     private String jwtSecret;
 
-    @Value( "${auth.token.expirationInMilis}" )
+    @Value( "${app.auth.token.expirationInMilis}" )
     private int expirationTime;
-
-    private final Logger logger = LoggerFactory.getLogger( JwtUtils.class );
 
     public String generateTokenForUser( Authentication authentication ){
         ShopUsuarioDetails userPrincipal = (ShopUsuarioDetails) authentication.getPrincipal();
@@ -69,10 +71,10 @@ public class JwtUtils {
                     .parseClaimsJws( token );
         }
         catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            logger.error("Falha na validação do Token JWT: {}", e.getMessage());
+            log.error("Falha na validação do Token JWT: {}", e.getMessage());
             throw new BadCredentialsException("Token inválido ou malformado", e);
         } catch (ExpiredJwtException e) {
-            logger.error("Token expirado: {}", e.getMessage());
+            log.error("Token expirado: {}", e.getMessage());
             throw new CredentialsExpiredException("O token expirou", e);
         }
         return true;

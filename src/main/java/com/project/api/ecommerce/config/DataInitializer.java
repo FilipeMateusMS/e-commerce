@@ -3,6 +3,7 @@ package com.project.api.ecommerce.config;
 import com.project.api.ecommerce.enums.PedidoStatus;
 import com.project.api.ecommerce.model.*;
 import com.project.api.ecommerce.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import java.util.List;
 
 // Fazer operações quando a aplicação subir o contexto
 @Component
+@RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
@@ -28,15 +30,6 @@ public class DataInitializer implements CommandLineRunner {
     private final ProdutoRepository produtoRepository;
     private final PedidoRepository pedidoRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public DataInitializer(UsuarioRepository usuarioRepository, RoleRepository roleRepository, CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository, PedidoRepository pedidoRepository, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.roleRepository = roleRepository;
-        this.categoriaRepository = categoriaRepository;
-        this.produtoRepository = produtoRepository;
-        this.pedidoRepository = pedidoRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public void run(String... args) {
@@ -57,7 +50,7 @@ public class DataInitializer implements CommandLineRunner {
         admin.setRoles(List.of(adminRole));
 
         Usuario user = new Usuario();
-        user.setNome("João Silva");
+        user.setNome("User 1");
         user.setEmail("user@email.com");
         user.setSenha(passwordEncoder.encode("123456"));
         user.setTelefone("11988888888");

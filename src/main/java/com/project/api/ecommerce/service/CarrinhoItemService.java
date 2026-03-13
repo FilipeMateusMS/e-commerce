@@ -1,9 +1,9 @@
 package com.project.api.ecommerce.service;
 
-import com.project.api.ecommerce.dto.CarrinhoItemRequestDTO;
-import com.project.api.ecommerce.dto.CarrinhoItemResponseDTO;
-import com.project.api.ecommerce.dto.CarrinhoItemUpdateDTO;
-import com.project.api.ecommerce.exceptions.EstoqueInsuficienteException;
+import com.project.api.ecommerce.dto.request.CarrinhoItemRequestDTO;
+import com.project.api.ecommerce.dto.request.CarrinhoItemResponseDTO;
+import com.project.api.ecommerce.dto.request.CarrinhoItemUpdateRequestDTO;
+import com.project.api.ecommerce.exceptions.BusinessAlertException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.CarrinhoItemMapper;
 import com.project.api.ecommerce.model.Carrinho;
@@ -13,6 +13,8 @@ import com.project.api.ecommerce.model.Usuario;
 import com.project.api.ecommerce.repository.CarrinhoItemRepository;
 import com.project.api.ecommerce.repository.CarrinhoRepository;
 import com.project.api.ecommerce.security.user.UserAuthenticatedService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CarrinhoItemService {
 
     private final CarrinhoItemRepository carrinhoItemRepository;
@@ -29,16 +33,6 @@ public class CarrinhoItemService {
     private final ProdutoService produtoService;
     private final CarrinhoItemMapper carrinhoItemMapper;
     private final UserAuthenticatedService userAuthenticatedService;
-
-    private static final Logger log = LoggerFactory.getLogger( CarrinhoItemService.class );
-
-    public CarrinhoItemService(CarrinhoItemRepository carrinhoItemRepository, CarrinhoRepository carrinhoRepository, ProdutoService produtoService, CarrinhoItemMapper carrinhoItemMapper, UserAuthenticatedService userAuthenticatedService) {
-        this.carrinhoItemRepository = carrinhoItemRepository;
-        this.carrinhoRepository = carrinhoRepository;
-        this.produtoService = produtoService;
-        this.carrinhoItemMapper = carrinhoItemMapper;
-        this.userAuthenticatedService = userAuthenticatedService;
-    }
 
     public CarrinhoItemResponseDTO obterCarrinhoItem(Long idCarrinhoItem )
     {
@@ -56,7 +50,7 @@ public class CarrinhoItemService {
     public CarrinhoItemResponseDTO upsertItemNoCarrinho( CarrinhoItemRequestDTO carrinhoItemDTO ) {
         Produto produto = produtoService.getProdutoEntity( carrinhoItemDTO.idProduto() );
         if( carrinhoItemDTO.quantidade() > produto.getQuantidade() )
-            throw new EstoqueInsuficienteException( "Estoque insuficiente para o produto '" + produto.getNome() + "'" );
+            throw new BusinessAlertException( "Estoque insuficiente para o produto '" + produto.getNome() + "'" );
 
         Carrinho carrinho;
         CarrinhoItem carrinhoItem;
@@ -98,13 +92,13 @@ public class CarrinhoItemService {
         return carrinhoItemMapper.toDTO( carrinhoItemRepository.save( carrinhoItem ) );
     }
 
-    public CarrinhoItemResponseDTO alterarQuantidade( Long idCarrinhoItem, CarrinhoItemUpdateDTO carrinhoItemUpdateDTO ){
+    public CarrinhoItemResponseDTO alterarQuantidade( Long idCarrinhoItem, CarrinhoItemUpdateRequestDTO carrinhoItemUpdateDTO ){
         CarrinhoItem carrinhoItem = carrinhoItemRepository.findById( idCarrinhoItem )
                         .orElseThrow(() -> new ResourceNotFoundException( "Carrinho não encontrado" ) );
         Produto produto = carrinhoItem.getProduto();
 
         if( produto.getQuantidade() - carrinhoItemUpdateDTO.quantidade() <= 0 )
-            throw new EstoqueInsuficienteException( "Quantidade do produto deve ser maior do que 0" );
+            throw new BusinessAlertException( "Quantidade do produto deve ser maior do que 0" );
 
         carrinhoItem.setQuantidade( carrinhoItemUpdateDTO.quantidade() );
 
@@ -117,6 +111,15 @@ public class CarrinhoItemService {
 
     public void removerItemDoCarrinho( Long idItemCarrinho ) {
         log.info("Removendo item carrinho idItem={}", idItemCarrinho);
+        CarrinhoItem item = carrinhoItemRepository.findById( idItemCarrinho )
+                        .orElseThrow( () -> new ResourceNotFoundException( "Item do carrinho não encontrado" ) );
+
+        Long carrinhoId = item.getCarrinho().getId();
+
         carrinhoItemRepository.deleteById( idItemCarrinho );
+
+        // Verifica se ainda existe algum item vinculado a este ID de carrinho
+        if( !carrinhoItemRepository.existsByCarrinhoId( carrinhoId ) )
+            carrinhoRepository.deleteById( carrinhoId );
     }
 }

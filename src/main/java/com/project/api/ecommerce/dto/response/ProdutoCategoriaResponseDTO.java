@@ -1,8 +1,8 @@
-package com.project.api.ecommerce.dto;
+package com.project.api.ecommerce.dto.response;
 
 import java.math.BigDecimal;
 
-public record ProdutoCategoriaDTO(
+public record ProdutoCategoriaResponseDTO(
         Long id,
         String nome,
         String marca,

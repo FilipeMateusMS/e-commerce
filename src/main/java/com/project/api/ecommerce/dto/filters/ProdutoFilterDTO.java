@@ -1,8 +1,8 @@
-package com.project.api.ecommerce.dto;
+package com.project.api.ecommerce.dto.filters;
 
 import java.math.BigDecimal;
 
-public record ProdutoSearchDTO(
+public record ProdutoFilterDTO(
         String nome,
         String marca,
         String descricao,

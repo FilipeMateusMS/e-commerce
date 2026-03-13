@@ -2,6 +2,7 @@ package com.project.api.ecommerce.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -9,9 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
+@Slf4j
 public class LoggingInterceptor implements HandlerInterceptor {
-
-    private static final Logger log = LoggerFactory.getLogger(LoggingInterceptor.class);
 
     private long startTime;
 

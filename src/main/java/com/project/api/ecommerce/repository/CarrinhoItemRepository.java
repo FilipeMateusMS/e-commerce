@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CarrinhoItemRepository extends JpaRepository<CarrinhoItem, Long> {
     void deleteAllByCarrinhoId(Long id);
+
+    boolean existsByCarrinhoId(Long carrinhoId);
 }

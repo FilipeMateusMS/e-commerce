@@ -1,4 +1,4 @@
-package com.project.api.ecommerce.dto;
+package com.project.api.ecommerce.dto.request;
 
 import jakarta.validation.constraints.*;
 import java.util.List;

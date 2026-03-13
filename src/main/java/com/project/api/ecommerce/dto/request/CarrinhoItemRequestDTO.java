@@ -1,8 +1,7 @@
-package com.project.api.ecommerce.dto;
+package com.project.api.ecommerce.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.hateoas.RepresentationModel;
 
 public record CarrinhoItemRequestDTO (
         @NotNull( message = "Deve ser fornecido o id do produto" )

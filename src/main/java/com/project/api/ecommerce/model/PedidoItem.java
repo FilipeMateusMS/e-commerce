@@ -1,8 +1,17 @@
 package com.project.api.ecommerce.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 public class PedidoItem {
 
@@ -24,9 +33,6 @@ public class PedidoItem {
     @JoinColumn( name = "produto_id", nullable = false )
     private Produto produto;
 
-    public PedidoItem() {
-    }
-
     public PedidoItem( Pedido pedido, Produto produto, int quantidade, BigDecimal precoVendaUnitario ) {
         this.quantidade = quantidade;
         this.precoVendaUnitario = precoVendaUnitario;
@@ -36,45 +42,5 @@ public class PedidoItem {
 
     public BigDecimal calcularValorTotalItem(){
         return produto.getPrecoUnitario().multiply( new BigDecimal( quantidade ) );
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public BigDecimal getPrecoVendaUnitario() {
-        return precoVendaUnitario;
-    }
-
-    public void setPrecoVendaUnitario(BigDecimal precoVendaUnitario) {
-        this.precoVendaUnitario = precoVendaUnitario;
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
     }
 }

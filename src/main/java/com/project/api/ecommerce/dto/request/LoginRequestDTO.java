@@ -1,8 +1,8 @@
-package com.project.api.ecommerce.dto;
+package com.project.api.ecommerce.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record AuthRequestDTO(
+public record LoginRequestDTO(
     @NotBlank( message = "Deve ser fornecido o email" )
     String email,
     @NotBlank( message = "Deve ser fornecido a senha" )

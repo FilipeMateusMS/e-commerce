@@ -1,10 +1,18 @@
 package com.project.api.ecommerce.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.HashSet;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Role {
 
@@ -17,46 +25,4 @@ public class Role {
 
     @ManyToMany( mappedBy = "roles" )
     private Collection<Usuario> usuarios = new HashSet<>();
-
-    public Role() {
-    }
-
-    public Role(Long id, String nome, Collection<Usuario> usuarios) {
-        this.id = id;
-        this.nome = nome;
-        this.usuarios = usuarios;
-    }
-
-    public Role(Long id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
-
-    public Role( String nome) {
-        this.nome = nome;
-    }
-
-    public Collection<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(Collection<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 }

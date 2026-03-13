@@ -1,8 +1,8 @@
 package com.project.api.ecommerce.service;
 
-import com.project.api.ecommerce.dto.ProdutoRequestDTO;
-import com.project.api.ecommerce.dto.ProdutoResponseDTO;
-import com.project.api.ecommerce.dto.ProdutoSearchDTO;
+import com.project.api.ecommerce.dto.request.ProdutoRequestDTO;
+import com.project.api.ecommerce.dto.response.ProdutoResponseDTO;
+import com.project.api.ecommerce.dto.filters.ProdutoFilterDTO;
 import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.ProdutoMapper;
@@ -12,6 +12,8 @@ import com.project.api.ecommerce.pagination.PageResponse;
 import com.project.api.ecommerce.repository.CategoriaRepository;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.specifications.ProdutoSpecs;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,19 +23,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
     private final CategoriaRepository categoriaRepository;
     private final ProdutoMapper produtoMapper;
-
-    private static final Logger logger = LoggerFactory.getLogger( ProdutoService.class );
-
-    public ProdutoService(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository, ProdutoMapper produtoMapper) {
-        this.produtoRepository = produtoRepository;
-        this.categoriaRepository = categoriaRepository;
-        this.produtoMapper = produtoMapper;
-    }
 
     public ProdutoResponseDTO getProdutoById(Long id) {
         Produto produto = produtoRepository.findById( id )
@@ -47,7 +43,7 @@ public class ProdutoService {
     }
 
     public PageResponse<ProdutoResponseDTO> getAllProdutosFiltered(
-            ProdutoSearchDTO produtoSearchDTO,
+            ProdutoFilterDTO produtoSearchDTO,
             Pageable pageable ) {
         Page<ProdutoResponseDTO> page = produtoRepository.findAll( ProdutoSpecs.buildFromFilter( produtoSearchDTO ), pageable )
                 .map( produtoMapper :: toDTO );

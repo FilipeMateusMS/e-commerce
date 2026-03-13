@@ -3,25 +3,22 @@ package com.project.api.ecommerce.controller;
 import com.project.api.ecommerce.controller.openapi.UsuarioControllerOpenApi;
 import com.project.api.ecommerce.pagination.PageResponse;
 import com.project.api.ecommerce.service.UsuarioService;
-import com.project.api.ecommerce.dto.UsuarioRequestDTO;
-import com.project.api.ecommerce.dto.UsuarioResponseDTO;
-import com.project.api.ecommerce.dto.UsuarioUpdateRequestDTO;
+import com.project.api.ecommerce.dto.request.UsuarioRequestDTO;
+import com.project.api.ecommerce.dto.response.UsuarioResponseDTO;
+import com.project.api.ecommerce.dto.request.UsuarioUpdateRequestDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping( "api/v1/usuarios" )
+@RequiredArgsConstructor
 public class UsuarioController implements UsuarioControllerOpenApi {
 
     private final UsuarioService usuarioService;
-
-    public UsuarioController( UsuarioService usuarioService, PasswordEncoder passwordEncoder ) {
-        this.usuarioService = usuarioService;
-    }
 
     @GetMapping( "/{id}" )
     @PreAuthorize("hasRole('USER')")
@@ -42,6 +39,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PutMapping( "/{id}")
+    @PreAuthorize("hasRole('USER', 'ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> alterarUsuario( @PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO usuarioUpdateRequestDTO ) {
         return ResponseEntity.ok( usuarioService.alterarUsuario( usuarioUpdateRequestDTO, id ) );
     }

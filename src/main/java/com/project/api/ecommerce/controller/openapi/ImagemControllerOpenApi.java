@@ -1,42 +1,56 @@
 package com.project.api.ecommerce.controller.openapi;
 
-import com.project.api.ecommerce.dto.ImagemResponseDTO;
+import com.project.api.ecommerce.dto.request.ImagemUploadRequestDTO;
+import com.project.api.ecommerce.dto.response.ImagemResponseDTO;
+import com.project.api.ecommerce.pagination.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "Imagens", description = "Endpoints para upload e gerenciamento de imagens de produtos")
+@Tag(name = "Imagens", description = "Gerenciamento de fotos dos produtos")
 public interface ImagemControllerOpenApi {
 
-    @Operation(summary = "Realiza o upload de múltiplas imagens para um produto")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Upload realizado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Arquivo inválido ou lista vazia", content = @Content)
-    })
-    ResponseEntity<List<ImagemResponseDTO>> uploadImagens(
-            @Parameter(description = "ID do produto", example = "1") Long idProduto,
-            @Parameter(description = "Arquivos de imagem (jpg, png)") MultipartFile[] files
-    );
+    @Operation(summary = "Listar imagens de um produto", description = "Acesso público")
+    @GetMapping("/produtos/{idProduto}")
+    ResponseEntity<PageResponse<ImagemResponseDTO>> obterImagenDoProduto(@PathVariable Long idProduto, Pageable pageable);
 
-    @Operation(summary = "Realiza o download/visualização de uma imagem")
-    @ApiResponse(responseCode = "200", description = "Imagem encontrada")
-    ResponseEntity<Resource> downloadImagem(@Parameter(description = "ID da imagem") Long idImagem);
+    @Operation(summary = "Listar todas as imagens", description = "Acesso público")
+    @GetMapping
+    ResponseEntity<PageResponse<ImagemResponseDTO>> obterImagens(Pageable pageable);
 
-    @Operation(summary = "Substitui o arquivo de uma imagem existente")
+    @Operation(summary = "Download/Visualizar imagem", description = "Retorna o arquivo binário da imagem")
+    @GetMapping("/{idImagem}")
+    ResponseEntity<Resource> downloadImagem(@PathVariable Long idImagem);
+
+    @Operation(summary = "Upload de nova imagem", description = "Restrito: ADMIN. Envie o arquivo no campo 'file'")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping(value = "/produtos/{idProduto}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<ImagemResponseDTO> uploadImagem(
+            @PathVariable Long idProduto,
+            @Valid @ModelAttribute("request") ImagemUploadRequestDTO imagemUploadRequestDTO);
+
+    @Operation(summary = "Substituir imagem existente", description = "Restrito: ADMIN")
+    @SecurityRequirement(name = "bearerAuth" )
+    @PutMapping(value = "/{idImagem}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ImagemResponseDTO> alterarImagem(
-            @Parameter(description = "ID da imagem") Long idImagem,
-            @Parameter(description = "Novo arquivo de imagem") MultipartFile file
-    );
+            @PathVariable Long idImagem,
+            @Valid @ModelAttribute("request") ImagemUploadRequestDTO imagemUploadRequestDTO);
 
-    @Operation(summary = "Exclui uma imagem do sistema")
-    @ApiResponse(responseCode = "204", description = "Imagem removida")
-    ResponseEntity<Void> deletarImagem(@Parameter(description = "ID da imagem") Long idImagem);
+    @Operation(summary = "Deletar imagem", description = "Restrito: ADMIN")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{idImagem}")
+    ResponseEntity<Void> deletarImagem(@PathVariable Long idImagem);
 }

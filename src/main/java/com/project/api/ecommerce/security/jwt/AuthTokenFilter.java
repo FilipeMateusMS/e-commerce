@@ -9,13 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -24,17 +24,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
-
-    private final Logger log = LoggerFactory.getLogger( AuthTokenFilter.class );
 
     private final JwtUtils jwtUtils;
     private final UsuarioDetailsService userDetailsService;
-
-    public AuthTokenFilter(JwtUtils jwtUtils, UsuarioDetailsService userDetailsService) {
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -56,7 +50,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter( request, response );
-
         }
         catch ( JwtException e ) {
             throw new BadCredentialsException( "Invalid or expired token, you may login again",e );

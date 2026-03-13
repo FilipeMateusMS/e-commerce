@@ -1,12 +1,13 @@
 package com.project.api.ecommerce.controller;
 
 import com.project.api.ecommerce.controller.openapi.CategoriaControllerOpenApi;
-import com.project.api.ecommerce.dto.CategoriaCreateRequestDTO;
-import com.project.api.ecommerce.dto.CategoriaResponseDTO;
+import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
+import com.project.api.ecommerce.dto.response.CategoriaResponseDTO;
 import com.project.api.ecommerce.pagination.PageResponse;
 import com.project.api.ecommerce.service.CategoriaService;
-import com.project.api.ecommerce.dto.CategoriaUpdateRequestDTO;
+import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -16,22 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping( "api/v1/categorias")
+@RequiredArgsConstructor
 public class CategoriaController implements CategoriaControllerOpenApi {
 
     private final CategoriaService categoriaService;
 
-    public CategoriaController( CategoriaService categoriaService ) {
-        this.categoriaService = categoriaService;
-    }
-
     @GetMapping( "/{id}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CategoriaResponseDTO> findById( @PathVariable Long id ) {
         return ResponseEntity.ok( categoriaService.findCategoriaById( id ) );
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<CategoriaResponseDTO>> findAllCategorias(
             @RequestParam( required = false ) String nome,
             @PageableDefault( sort = "nome" ) Pageable pageable ){

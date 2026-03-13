@@ -1,15 +1,11 @@
 package com.project.api.ecommerce.mappers;
 
-import com.project.api.ecommerce.dto.ProdutoCategoriaDTO;
-import com.project.api.ecommerce.dto.ProdutoRequestDTO;
-import com.project.api.ecommerce.dto.ProdutoResponseDTO;
+import com.project.api.ecommerce.dto.request.ProdutoRequestDTO;
+import com.project.api.ecommerce.dto.response.ProdutoResponseDTO;
 import com.project.api.ecommerce.model.Categoria;
 import com.project.api.ecommerce.model.Produto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Mapper( componentModel = "spring", uses = CategoriaMapper.class )
 public interface ProdutoMapper {
@@ -25,5 +21,6 @@ public interface ProdutoMapper {
     @Mapping(target = "precoUnitario", source = "produtoDTO.preco")
     @Mapping(target = "quantidade", source = "produtoDTO.quantidade")
     @Mapping(target = "categoria", source = "categoria")
+    @Mapping(target = "imagens", ignore = true)
     Produto toProduto(ProdutoRequestDTO produtoDTO, Categoria categoria);
 }

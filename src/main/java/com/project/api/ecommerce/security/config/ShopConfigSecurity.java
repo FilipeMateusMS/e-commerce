@@ -1,11 +1,14 @@
 package com.project.api.ecommerce.security.config;
 
 import com.project.api.ecommerce.security.jwt.AuthTokenFilter;
+import com.project.api.ecommerce.security.jwt.JwtAccessDeniedHandler;
 import com.project.api.ecommerce.security.jwt.JwtAuthEntryPoint;
 import com.project.api.ecommerce.security.jwt.JwtUtils;
 import com.project.api.ecommerce.security.user.UsuarioDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,21 +26,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity( prePostEnabled = true )
+@RequiredArgsConstructor
 public class ShopConfigSecurity {
 
     private final UsuarioDetailsService userDetailsService;
     private final JwtAuthEntryPoint authEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtUtils jwtUtils;
-
-    private static final String[] SECURED_URLS = {
-            "api/v1/usuarios/**"
-    };
-
-    public ShopConfigSecurity( UsuarioDetailsService userDetailsService, JwtAuthEntryPoint authEntryPoint, JwtUtils jwtUtils ) {
-        this.userDetailsService = userDetailsService;
-        this.authEntryPoint = authEntryPoint;
-        this.jwtUtils = jwtUtils;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -72,13 +67,25 @@ public class ShopConfigSecurity {
 
         http.csrf( AbstractHttpConfigurer:: disable )
                 .exceptionHandling( exception ->
-                        exception.authenticationEntryPoint( authEntryPoint ) )
+                        exception.authenticationEntryPoint( authEntryPoint )
+                                .accessDeniedHandler(jwtAccessDeniedHandler)
+                )
                 .sessionManagement( session ->
-                        session.sessionCreationPolicy( SessionCreationPolicy.STATELESS ) )
+                        session.sessionCreationPolicy( SessionCreationPolicy.STATELESS )
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( SECURED_URLS ).authenticated()
-                        .anyRequest().permitAll()
-                );
+                        .requestMatchers( "/api/v1/auth/**" ).permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers( HttpMethod.GET, "/api/v1/produtos/**").permitAll()
+                        .requestMatchers( HttpMethod.GET, "/api/v1/categorias/**").permitAll()
+                        .requestMatchers( HttpMethod.GET, "/api/v1/imagens/**").permitAll()
+                        .anyRequest().authenticated()  // todo o resto precisa estar autenticado
+                )
+                .anonymous( AbstractHttpConfigurer::disable ); // Desabilita o anonymus automático( ROLE_ANONYMOUS )
 
         http.authenticationProvider( daoAuthenticationProvider() );
         http.addFilterBefore( authTokenFilter(), UsernamePasswordAuthenticationFilter.class );

@@ -1,28 +1,33 @@
 services:
   db:
     image: mysql:8.0
-    container_name: mysql_container
+    container_name: mysql-container
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: minha_app_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
     ports:
-      - "3307:3306"  # Expondo o MySQL na porta 3307 da sua máquina local
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
 
   app:
-    build: ./app    # Caminho para o seu Dockerfile
-    container_name: minha_app_container
+    build: .
+    container_name: ecommerce-api-container
     depends_on:
-      - db          # Garante que o banco suba antes da app
+      db:
+        condition: service_healthy #Garante que o BD suba antes da aplicação
+    ports:
+      - "8080:8080"
     environment:
-      # IMPORTANTE: Dentro da rede do Docker, use o NOME DO SERVIÇO e a PORTA PADRÃO
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root_password
-      DB_NAME: minha_app_db
+      # Propriedades que irão ser lidas
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ecommerce?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
 
 volumes:
   db_data:
