@@ -16,7 +16,7 @@ public class CacheController {
     private final CacheService cacheService;
 
     @PostMapping( "/clear" )
-    //@PreAuthorize( "hasRole('ADMIN')" )
+    @PreAuthorize( "hasRole('ADMIN')" )
     public void clear( @RequestParam( "cacheName" ) String cacheName ){
         cacheService.clear( cacheName );
     }

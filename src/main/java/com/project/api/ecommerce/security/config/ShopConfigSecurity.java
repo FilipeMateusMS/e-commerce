@@ -78,8 +78,7 @@ public class ShopConfigSecurity {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/api/v1/cache/clear"
+                                "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers( HttpMethod.GET, "/api/v1/produtos/**").permitAll()
                         .requestMatchers( HttpMethod.GET, "/api/v1/categorias/**").permitAll()
