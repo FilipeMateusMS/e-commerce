@@ -1,79 +1,45 @@
 package com.project.api.ecommerce.specifications;
 
+import com.project.api.ecommerce.commom.specifications.Specs;
 import com.project.api.ecommerce.dto.filters.ProdutoFilterDTO;
 import com.project.api.ecommerce.model.Produto;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.math.BigDecimal;
-
 public class ProdutoSpecs {
 
-    public static Specification<Produto> nomeContem(String nome) {
-        return (root, query, builder) ->
-                builder.like(builder.lower(root.get("nome")), "%" + nome.toLowerCase() + "%");
-    }
-
-    public static Specification<Produto> marcaContem(String marca) {
-        return (root, query, builder) ->
-                builder.like(builder.lower(root.get("marca")), "%" + marca.toLowerCase() + "%");
-    }
-
-    public static Specification<Produto> descricaoContem(String descricao) {
-        return (root, query, builder) ->
-                builder.like(builder.lower(root.get("descricao")), "%" + descricao.toLowerCase() + "%");
-    }
-
-    public static Specification<Produto> precoMaiorQue(BigDecimal preco) {
-        return (root, query, builder) ->
-                builder.greaterThan(root.get("preco"), preco);
-    }
-
-    public static Specification<Produto> precoMenorQue(BigDecimal preco) {
-        return (root, query, builder) ->
-                builder.lessThan(root.get("preco"), preco);
-    }
-
-    public static Specification<Produto> quantidadeMaiorQue(Integer quantidade) {
-        return (root, query, builder) ->
-                builder.greaterThan(root.get("quantidade"), quantidade);
-    }
-
-    public static Specification<Produto> quantidadeMenorQue(Integer quantidade) {
-        return (root, query, builder) ->
-                builder.lessThan(root.get("quantidade"), quantidade);
-    }
-
-    public static Specification<Produto> categoriaIgual(String nmCategoria) {
-        return (root, query, builder) ->
-                builder.equal(root.get("categoria"), nmCategoria);
-    }
-
-    public static <T> Specification<T> emptySpec() {
-        return (root, query, builder) ->
-                builder.conjunction();
-    }
-
     public static Specification<Produto> buildFromFilter(ProdutoFilterDTO dto) {
-        Specification<Produto> spec = Specification.where( emptySpec() );
 
-        if (dto.nome() != null && !dto.nome().isEmpty()) {
-            spec = spec.and(nomeContem(dto.nome()));
+        // Irá retornar todos os registros caso não seja fornecido no filtro
+        Specification<Produto> spec = Specs.alwaysTrue();
+
+        if (dto.getNome() != null && !dto.getNome().isBlank()) {
+            spec = spec.and(Specs.like("nome", dto.getNome() ) );
         }
-        if (dto.marca() != null && !dto.marca().isEmpty()) {
-            spec = spec.and(marcaContem(dto.marca()));
+
+        if (dto.getMarca() != null && !dto.getMarca().isBlank()) {
+            spec = spec.and(Specs.like("marca", dto.getMarca()));
         }
-        if (dto.descricao() != null && !dto.descricao().isEmpty()) {
-            spec = spec.and(descricaoContem(dto.descricao()));
+
+        if (dto.getDescricao() != null && !dto.getDescricao().isBlank()) {
+            spec = spec.and(Specs.like("descricao", dto.getDescricao()));
         }
-        if (dto.preco() != null) {
-            spec = spec.and(precoMaiorQue(dto.preco()));
+
+        if (dto.getPrecoMin() != null) {
+            spec = spec.and(Specs.greaterThanOrEqual("precoUnitario", dto.getPrecoMin()));
         }
-        if (dto.quantidade() != null) {
-            spec = spec.and(quantidadeMaiorQue(dto.quantidade()));
+
+        if (dto.getPrecoMax() != null) {
+            spec = spec.and(Specs.lessThanOrEqual("precoUnitario", dto.getPrecoMax()));
         }
-        if (dto.nomeCategoria() != null) {
-            spec = spec.and(categoriaIgual(dto.nomeCategoria()));
+
+        if (dto.getPrecoMin() != null && dto.getPrecoMax() != null) {
+            spec = spec.and(Specs.between("precoUnitario", dto.getPrecoMin(), dto.getPrecoMax()));
         }
+
+        if (dto.getNomeCategoria() != null && !dto.getNomeCategoria().isBlank()) {
+            spec = spec.and(Specs.like("categoria.nome", dto.getNomeCategoria()));
+        }
+
         return spec;
     }
 }

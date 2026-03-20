@@ -3,7 +3,7 @@ package com.project.api.ecommerce.controller;
 import com.project.api.ecommerce.controller.openapi.PedidoControllerOpenApi;
 import com.project.api.ecommerce.dto.response.PedidoResponseDTO;
 import com.project.api.ecommerce.dto.response.PedidoStatusDTO;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.service.PedidoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

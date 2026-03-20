@@ -1,3 +1,5 @@
+# Para rodar esse arquivo docker-compose up -d
+
 services:
   db:
     image: mysql:8.0
@@ -15,12 +17,28 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis-container
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   app:
     build: .
     container_name: ecommerce-api-container
     depends_on:
       db:
         condition: service_healthy #Garante que o BD suba antes da aplicação
+      redis:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
@@ -28,6 +46,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ecommerce?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_CACHE_TYPE: redis
 
 volumes:
   db_data:
+  redis_data:

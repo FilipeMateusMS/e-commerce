@@ -8,14 +8,15 @@ import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.PedidoMapper;
 import com.project.api.ecommerce.model.*;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.repository.CarrinhoRepository;
 import com.project.api.ecommerce.repository.PedidoRepository;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.security.user.UserAuthenticatedService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,25 @@ public class PedidoService {
     private final PedidoMapper pedidoMapper;
     private final UserAuthenticatedService userAuthenticatedService;
 
+    @Cacheable(value = "pedidos", key = "#pedidoId")
     public PedidoResponseDTO getPedido(Long pedidoId ) {
         return pedidoMapper.toDTO( pedidoRepository.findById( pedidoId )
                 .orElseThrow( () -> new ResourceNotFoundException( "Pedido não encontrado" ) ) );
     }
 
+    // Não incluí no cache, pois é um dado sensível do usuário e pouco reutilizável
+    public PageResponse<PedidoResponseDTO> getUsuarioPedidos(Pageable pageable ){
+        Usuario usuario = userAuthenticatedService.getAuthenticatedUser();
+
+        Page<PedidoResponseDTO> peditoDTOPage = pedidoRepository.findAllByUsuarioId( usuario.getId(), pageable )
+                .map( pedidoMapper:: toDTO );
+        return PageResponse.of( peditoDTOPage );
+    }
+
     @Transactional
+    @Caching(evict = { @CacheEvict(value = "pedidos", allEntries = true),
+                       @CacheEvict(value = "produtos", allEntries = true) // Estoque mudou
+    })
     public PedidoResponseDTO finalizarPedido(){
         Usuario usuario = userAuthenticatedService.getAuthenticatedUser();
 
@@ -75,14 +89,8 @@ public class PedidoService {
         return pedido;
     }
 
-    public PageResponse<PedidoResponseDTO> getUsuarioPedidos(Pageable pageable ){
-        Usuario usuario = userAuthenticatedService.getAuthenticatedUser();
-
-        Page<PedidoResponseDTO> peditoDTOPage = pedidoRepository.findAllByUsuarioId( usuario.getId(), pageable )
-                .map( pedidoMapper:: toDTO );
-        return PageResponse.of( peditoDTOPage );
-    }
-
+    @Transactional
+    @CacheEvict(value = "pedidos", allEntries = true)
     public PedidoResponseDTO alterarPedidoStatus(Long idPedido, PedidoStatusDTO pedidoStatusDTO ) {
         Pedido pedido = pedidoRepository.findById( idPedido )
                 .orElseThrow( () -> new ResourceNotFoundException( "Pedido não encontrado" ) );

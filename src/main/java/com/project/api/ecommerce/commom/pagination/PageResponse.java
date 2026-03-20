@@ -1,4 +1,4 @@
-package com.project.api.ecommerce.pagination;
+package com.project.api.ecommerce.commom.pagination;
 
 import org.springframework.data.domain.Page;
 

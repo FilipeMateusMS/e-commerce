@@ -2,7 +2,7 @@ package com.project.api.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.service.ProdutoService;
 import com.project.api.ecommerce.dto.response.CategoriaProdutoResponseDTO;
 import com.project.api.ecommerce.dto.request.ProdutoRequestDTO;

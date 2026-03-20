@@ -22,7 +22,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
         startTime = System.currentTimeMillis();
 
-        log.info("HTTP {} {}", request.getMethod(), request.getRequestURI());
+        log.info("HTTP {} {}?{}", request.getMethod(), request.getRequestURI(), request.getQueryString() );
         return true;
     }
 

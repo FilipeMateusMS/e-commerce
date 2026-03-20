@@ -7,14 +7,15 @@ import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.ImagemMapper;
 import com.project.api.ecommerce.model.Imagem;
 import com.project.api.ecommerce.model.Produto;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.repository.ImagemRepository;
+import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.service.storage.StorageService;
 import com.project.api.ecommerce.validators.ImageValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -30,12 +31,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImagemService {
 
     private final ImagemRepository imagemRepository;
-    private final ProdutoService produtoService;
+    private final ProdutoRepository produtoRepository;
     private final ImagemMapper imagemMapper;
     private final ImageValidator imageValidator;
 
     private final StorageService storageService;
 
+    @Cacheable(value = "imagens", key = "'produto-' + #idProduto + '-' + #pageable.pageNumber")
     public PageResponse<ImagemResponseDTO> obterImagensDoProduto(Long idProduto, Pageable pageable )
     {
          Page<ImagemResponseDTO> pages = imagemRepository.findAllByProdutoId( idProduto, pageable )
@@ -43,6 +45,7 @@ public class ImagemService {
          return PageResponse.of( pages );
     }
 
+    @Cacheable(value = "imagens", key = "'lista-' + #pageable.pageNumber")
     public PageResponse<ImagemResponseDTO> obterImagens( Pageable pageable )
     {
         Page<ImagemResponseDTO> pages = imagemRepository.findAll( pageable )
@@ -83,6 +86,7 @@ public class ImagemService {
         }
     }
 
+    @CacheEvict(value = "imagens", allEntries = true)
     public void deleteImagemById( Long id ) {
         Imagem imagem = imagemRepository.findById( id )
                 .orElseThrow( () -> new ResourceNotFoundException( "Imagem não encontrada" ) );
@@ -96,11 +100,14 @@ public class ImagemService {
     }
 
     @Transactional
+    @CacheEvict(value = "imagens", allEntries = true)
     public ImagemResponseDTO uploadImagem(Long idProduto, ImagemUploadRequestDTO imagemUploadRequestDTO ) {
-        Produto produto = produtoService.getProdutoEntity( idProduto );
-        MultipartFile file = imagemUploadRequestDTO.getFile();
 
+        MultipartFile file = imagemUploadRequestDTO.getFile();
         imageValidator.validar( file );
+
+        Produto produto = produtoRepository.findById( idProduto )
+                .orElseThrow( () -> new ResourceNotFoundException( "Produto não encontrado" ) );
 
         try{
             String storageKey = storageService.salvar( file );
@@ -113,6 +120,7 @@ public class ImagemService {
         }
     }
 
+    @CacheEvict(value = "imagens", allEntries = true)
     public ImagemResponseDTO updateImagem(Long idImagem, ImagemUploadRequestDTO imagemUploadRequestDTO ) {
 
         imageValidator.validar( imagemUploadRequestDTO.getFile() );

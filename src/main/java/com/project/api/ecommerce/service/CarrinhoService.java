@@ -3,7 +3,7 @@ package com.project.api.ecommerce.service;
 import com.project.api.ecommerce.dto.response.CarrinhoResponseDTO;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.CarrinhoMapper;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.repository.CarrinhoItemRepository;
 import com.project.api.ecommerce.repository.CarrinhoRepository;
 import org.slf4j.Logger;

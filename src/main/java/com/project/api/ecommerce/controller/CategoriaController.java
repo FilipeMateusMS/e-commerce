@@ -3,7 +3,7 @@ package com.project.api.ecommerce.controller;
 import com.project.api.ecommerce.controller.openapi.CategoriaControllerOpenApi;
 import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
 import com.project.api.ecommerce.dto.response.CategoriaResponseDTO;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.service.CategoriaService;
 import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
 import jakarta.validation.Valid;

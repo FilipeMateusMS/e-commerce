@@ -3,7 +3,7 @@ package com.project.api.ecommerce.service;
 import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
 import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
 import com.project.api.ecommerce.model.Produto;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.dto.response.CategoriaResponseDTO;
 import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;
@@ -13,8 +13,9 @@ import com.project.api.ecommerce.model.Categoria;
 import com.project.api.ecommerce.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,16 @@ public class CategoriaService {
     private final CategoriaMapper categoriaMapper;
     private final ProdutoRepository produtoRepository;
 
+    @Cacheable(value = "categorias", key = "#id")
     public CategoriaResponseDTO findCategoriaById(Long id) {
         return categoriaMapper.toDTO( categoriaRepository.findById( id )
                 .orElseThrow( () -> new ResourceNotFoundException( "Categoria não encontrada" ) ) );
     }
 
+    @Cacheable(
+            value = "categorias",
+            key = "#nome + '-page=' + #pageable.pageNumber + '-size=' + #pageable.pageSize + '-sort=' + #pageable.sort.toString()"
+    )
     public PageResponse<CategoriaResponseDTO> findAllByContendoNome( String nome, Pageable pageable ) {
         Page<Categoria> page = ( nome == null || nome.isBlank() )
                         ? categoriaRepository.findAll( pageable )
@@ -44,6 +50,7 @@ public class CategoriaService {
         return PageResponse.of( page.map( categoriaMapper::toDTO ) );
     }
 
+    @CacheEvict(value = "categorias", allEntries = true)
     public CategoriaResponseDTO addCategoria( CategoriaCreateRequestDTO categoriaDTO ) {
         if( categoriaRepository.existsByNome( categoriaDTO.nome() ) )
             throw new ResourceAlreadyExistsException( "Categoria '" + categoriaDTO.nome() + "' já existe" );
@@ -53,6 +60,8 @@ public class CategoriaService {
     }
 
     @Transactional
+    @Caching(evict = { @CacheEvict(value = "categorias", allEntries = true),
+                       @CacheEvict(value = "produtos", allEntries = true ) })
     public void adicionarProdutoNaCategoria( Long categoriaId, Long produtoId ) {
         Categoria categoria = categoriaRepository.findById( categoriaId )
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
@@ -69,6 +78,7 @@ public class CategoriaService {
     }
 
     @Transactional
+    @CacheEvict(value = "categorias", allEntries = true)
     public CategoriaResponseDTO updateCategoria( Long id, CategoriaUpdateRequestDTO categoriaDTO ) {
         Categoria categoria = categoriaRepository.findById( id )
                 .orElseThrow(() -> new ResourceNotFoundException( "Categoria não encontrada" ) );
@@ -102,6 +112,7 @@ public class CategoriaService {
         return produtos;
     }
 
+    @CacheEvict(value = "categorias", allEntries = true)
     public void deleteCategoriaById(Long id) {
         categoriaRepository.findById( id ).ifPresentOrElse( categoriaRepository::delete, () -> {
                     throw new ResourceNotFoundException( "Categoria não encontrada" );

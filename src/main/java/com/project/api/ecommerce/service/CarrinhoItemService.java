@@ -12,6 +12,7 @@ import com.project.api.ecommerce.model.Produto;
 import com.project.api.ecommerce.model.Usuario;
 import com.project.api.ecommerce.repository.CarrinhoItemRepository;
 import com.project.api.ecommerce.repository.CarrinhoRepository;
+import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.security.user.UserAuthenticatedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class CarrinhoItemService {
 
     private final CarrinhoItemRepository carrinhoItemRepository;
     private final CarrinhoRepository carrinhoRepository;
-    private final ProdutoService produtoService;
+    private final ProdutoRepository produtoRepository;
     private final CarrinhoItemMapper carrinhoItemMapper;
     private final UserAuthenticatedService userAuthenticatedService;
 
@@ -48,7 +49,8 @@ public class CarrinhoItemService {
      */
     @Transactional
     public CarrinhoItemResponseDTO upsertItemNoCarrinho( CarrinhoItemRequestDTO carrinhoItemDTO ) {
-        Produto produto = produtoService.getProdutoEntity( carrinhoItemDTO.idProduto() );
+        Produto produto = produtoRepository.findById( carrinhoItemDTO.idProduto() )
+                .orElseThrow( () -> new ResourceNotFoundException( "Produto não encontrado" ) );
         if( carrinhoItemDTO.quantidade() > produto.getQuantidade() )
             throw new BusinessAlertException( "Estoque insuficiente para o produto '" + produto.getNome() + "'" );
 

@@ -7,12 +7,11 @@ import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.UsuarioMapper;
 import com.project.api.ecommerce.model.Usuario;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,22 +26,20 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Cacheable(value = "usuarios", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public PageResponse<UsuarioResponseDTO> findAllUsuario( Pageable pageable ) {
         Page<UsuarioResponseDTO> dtoPage = usuarioRepository.findAll( pageable )
                 .map( usuarioMapper :: toDTO );
         return PageResponse.of( dtoPage );
     }
 
-    public Usuario findUsuarioByIdEntity(Long idUsuario ){
-        return usuarioRepository.findById( idUsuario )
-                .orElseThrow( () -> new ResourceNotFoundException( "Usuário não encontrado" ) );
-    }
-
+    @Cacheable(value = "usuarios", key = "#idUsuario")
     public UsuarioResponseDTO findUsuarioById(Long idUsuario ){
         return usuarioMapper.toDTO( usuarioRepository.findById( idUsuario )
                 .orElseThrow( () -> new ResourceNotFoundException( "Usuário não encontrado" ) ) );
     }
 
+    @CacheEvict(value = "usuarios", allEntries = true)
     public UsuarioResponseDTO criarUsuario( UsuarioRequestDTO usuarioRequestDTO ) {
         if( usuarioRepository.existsByNome( usuarioRequestDTO.nome() ) )
             throw new ResourceAlreadyExistsException( "Já existe um usuário com o nome cadastrado" );
@@ -53,6 +50,7 @@ public class UsuarioService {
         return usuarioMapper.toDTO( usuarioRepository.save( usuario ) );
     }
 
+    @CacheEvict(value = "usuarios", allEntries = true)
     public UsuarioResponseDTO alterarUsuario( UsuarioUpdateRequestDTO usuarioUpdateRequestDTO, Long idUsuario ) {
         return usuarioMapper.toDTO( usuarioRepository.findById( idUsuario )
                 .map( usuarioExistente -> {
@@ -62,6 +60,7 @@ public class UsuarioService {
                 .orElseThrow( () -> new ResourceNotFoundException( "Usuário não encontrado" ) )  );
     }
 
+    @CacheEvict(value = "usuarios", allEntries = true)
     public void deletarUsuario( Long idUsuario ) {
         usuarioRepository.findById( idUsuario )
                 .ifPresentOrElse( usuarioRepository :: delete,

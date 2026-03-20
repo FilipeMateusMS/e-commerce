@@ -2,7 +2,7 @@ package com.project.api.ecommerce.controller;
 
 import com.project.api.ecommerce.controller.openapi.CarrinhoControllerOpenApi;
 import com.project.api.ecommerce.dto.response.CarrinhoResponseDTO;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.service.CarrinhoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

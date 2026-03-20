@@ -8,17 +8,22 @@ import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.ProdutoMapper;
 import com.project.api.ecommerce.model.Categoria;
 import com.project.api.ecommerce.model.Produto;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.repository.CategoriaRepository;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.specifications.ProdutoSpecs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Optional;
 
@@ -31,20 +36,22 @@ public class ProdutoService {
     private final CategoriaRepository categoriaRepository;
     private final ProdutoMapper produtoMapper;
 
+    @Cacheable( value = "produtos", key = "#id" )
     public ProdutoResponseDTO getProdutoById(Long id) {
         Produto produto = produtoRepository.findById( id )
                 .orElseThrow( () -> new ResourceNotFoundException( "Produto não encontrado" ) );
         return produtoMapper.toDTO( produto );
     }
 
-    public Produto getProdutoEntity(Long id) {
-        return produtoRepository.findById( id )
-                .orElseThrow( () -> new ResourceNotFoundException( "Produto não encontrado" ) );
-    }
-
+    // Chave composta
+    @Cacheable(
+            value = "produtos",
+            key = "#produtoSearchDTO.toString() + '-' + #pageable.pageNumber + '-' + #pageable.pageSize.toString() + '-' + #pageable.sort.toString()",
+            condition = "#pageable.pageNumber == 0"  // Só armazena no Cache a primeira página
+    )
     public PageResponse<ProdutoResponseDTO> getAllProdutosFiltered(
-            ProdutoFilterDTO produtoSearchDTO,
-            Pageable pageable ) {
+            @ModelAttribute ProdutoFilterDTO produtoSearchDTO,
+            @PageableDefault( sort= "nome" ) Pageable pageable ) {
         Page<ProdutoResponseDTO> page = produtoRepository.findAll( ProdutoSpecs.buildFromFilter( produtoSearchDTO ), pageable )
                 .map( produtoMapper :: toDTO );
         return PageResponse.of( page );
@@ -54,6 +61,8 @@ public class ProdutoService {
         Se o produto veio com a categoria verifica se existe a categoria
         Se existir a categoria insere com a categoria existente, senão cria uma categoria
      */
+    @Caching( evict = { @CacheEvict(value = "produtos", allEntries = true),
+                        @CacheEvict(value = "categorias", allEntries = true) })
     public ProdutoResponseDTO insertProduto(ProdutoRequestDTO produtoDTO ) {
         Categoria categoria = obterOuSalvar( produtoDTO.nomeCategoria() );
 
@@ -64,17 +73,17 @@ public class ProdutoService {
         return produtoMapper.toDTO( produtoRepository.save( produto ) );
     }
 
-    private Categoria obterOuSalvar( String nomeCategoria ) {
-        return Optional.ofNullable( categoriaRepository.findByNome( nomeCategoria ) )
-                .orElseGet( () -> categoriaRepository.save( new Categoria( nomeCategoria ) ) );
-    }
-
+    @Caching(evict = { @CacheEvict(value = "produtos", allEntries = true ),
+                       @CacheEvict(value = "categorias", allEntries = true) })
     public void deleteProdutoById(Long id) {
         if( !produtoRepository.existsById( id ) )
             throw new ResourceNotFoundException( "Produto não encontrado" );
         produtoRepository.deleteById(id);
     }
 
+    @Transactional
+    @Caching( evict = { @CacheEvict(value = "produtos", allEntries = true ),
+                        @CacheEvict(value = "categorias", allEntries = true) } )
     public ProdutoResponseDTO updateProduto(Long id, ProdutoRequestDTO produtoRequest ) {
         return produtoRepository.findById( id )
                 .map( produtoExistente -> updateProdutoExistente( produtoExistente, produtoRequest ) )
@@ -83,7 +92,12 @@ public class ProdutoService {
                 .orElseThrow( ()-> new ResourceNotFoundException( "Produto não encontrado" ) );
     }
 
-    public Produto updateProdutoExistente( Produto produtoExistente, ProdutoRequestDTO produtoRequestDTO )
+    private Categoria obterOuSalvar( String nomeCategoria ) {
+        return Optional.ofNullable( categoriaRepository.findByNome( nomeCategoria ) )
+                .orElseGet( () -> categoriaRepository.save( new Categoria( nomeCategoria ) ) );
+    }
+
+    private Produto updateProdutoExistente( Produto produtoExistente, ProdutoRequestDTO produtoRequestDTO )
     {
         if( produtoRepository.existsByNomeIgnoreCaseAndIdNot( produtoRequestDTO.nome(), produtoExistente.getId() ) )
             throw new ResourceAlreadyExistsException( "Produto com nome '" + produtoRequestDTO.nome() + "' já existe" );

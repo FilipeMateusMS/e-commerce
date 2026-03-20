@@ -3,7 +3,7 @@ package com.project.api.ecommerce.controller;
 import com.project.api.ecommerce.controller.openapi.ImagemControllerOpenApi;
 import com.project.api.ecommerce.dto.request.ImagemUploadRequestDTO;
 import com.project.api.ecommerce.dto.response.ImagemResponseDTO;
-import com.project.api.ecommerce.pagination.PageResponse;
+import com.project.api.ecommerce.commom.pagination.PageResponse;
 import com.project.api.ecommerce.service.ImagemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
