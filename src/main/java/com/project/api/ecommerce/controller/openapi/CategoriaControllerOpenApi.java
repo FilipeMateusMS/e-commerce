@@ -3,7 +3,7 @@ package com.project.api.ecommerce.controller.openapi;
 import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
 import com.project.api.ecommerce.dto.response.CategoriaResponseDTO;
 import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;

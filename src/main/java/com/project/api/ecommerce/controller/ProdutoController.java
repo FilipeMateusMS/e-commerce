@@ -4,7 +4,7 @@ import com.project.api.ecommerce.controller.openapi.ProdutoControllerOpenApi;
 import com.project.api.ecommerce.dto.request.ProdutoRequestDTO;
 import com.project.api.ecommerce.dto.response.ProdutoResponseDTO;
 import com.project.api.ecommerce.dto.filters.ProdutoFilterDTO;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.service.ProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

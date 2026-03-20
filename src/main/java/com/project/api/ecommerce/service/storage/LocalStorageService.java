@@ -40,7 +40,7 @@ public class LocalStorageService implements StorageService {
             // Verifica se o diretório não existe e tenta criar
             if (!Files.exists(root)) {
                 Files.createDirectories(root);
-                // Opcional: Log informando que o diretório foi criado
+                // Log informando que o diretório foi criado
                 log.warn( "Diretório criado: {}", root.getFileName() );
             }
 

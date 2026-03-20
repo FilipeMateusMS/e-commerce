@@ -1,9 +1,9 @@
-package com.project.api.ecommerce.commom.specifications;
+package com.project.api.ecommerce.repository.specs;
 
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Expression;
+
 import java.util.Collection;
 
 public class Specs {

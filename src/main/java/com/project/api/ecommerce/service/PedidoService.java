@@ -2,13 +2,13 @@ package com.project.api.ecommerce.service;
 
 import com.project.api.ecommerce.dto.response.PedidoResponseDTO;
 import com.project.api.ecommerce.dto.response.PedidoStatusDTO;
-import com.project.api.ecommerce.enums.PedidoStatus;
+import com.project.api.ecommerce.model.enums.PedidoStatus;
 import com.project.api.ecommerce.exceptions.BusinessAlertException;
 import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.PedidoMapper;
 import com.project.api.ecommerce.model.*;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.repository.CarrinhoRepository;
 import com.project.api.ecommerce.repository.PedidoRepository;
 import com.project.api.ecommerce.repository.ProdutoRepository;

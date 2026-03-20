@@ -1,7 +1,7 @@
 package com.project.api.ecommerce.controller;
 
 import com.project.api.ecommerce.controller.openapi.UsuarioControllerOpenApi;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.service.UsuarioService;
 import com.project.api.ecommerce.dto.request.UsuarioRequestDTO;
 import com.project.api.ecommerce.dto.response.UsuarioResponseDTO;

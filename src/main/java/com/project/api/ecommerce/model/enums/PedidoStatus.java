@@ -1,4 +1,4 @@
-package com.project.api.ecommerce.enums;
+package com.project.api.ecommerce.model.enums;
 
 public enum PedidoStatus {
     PENDENTE,

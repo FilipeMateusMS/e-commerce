@@ -1,6 +1,6 @@
 package com.project.api.ecommerce.model;
 
-import com.project.api.ecommerce.enums.PedidoStatus;
+import com.project.api.ecommerce.model.enums.PedidoStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.project.api.ecommerce.dto.response;
 
-import com.project.api.ecommerce.enums.PedidoStatus;
+import com.project.api.ecommerce.model.enums.PedidoStatus;
 import jakarta.validation.constraints.NotNull;
 
 public record PedidoStatusDTO(

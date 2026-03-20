@@ -2,18 +2,20 @@ package com.project.api.ecommerce.service;
 
 import com.project.api.ecommerce.dto.request.ImagemUploadRequestDTO;
 import com.project.api.ecommerce.dto.response.ImagemResponseDTO;
+import com.project.api.ecommerce.exceptions.BusinessAlertException;
 import com.project.api.ecommerce.exceptions.FileStorageException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.project.api.ecommerce.mappers.ImagemMapper;
 import com.project.api.ecommerce.model.Imagem;
 import com.project.api.ecommerce.model.Produto;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.repository.ImagemRepository;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.service.storage.StorageService;
 import com.project.api.ecommerce.validators.ImageValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +37,9 @@ public class ImagemService {
     private final ImagemRepository imagemRepository;
     private final ProdutoRepository produtoRepository;
     private final ImagemMapper imagemMapper;
-    private final ImageValidator imageValidator;
+
+    @Value("${app.images.allowed-types}")
+    private List<String> allowedTypes;
 
     private final StorageService storageService;
 
@@ -104,7 +110,7 @@ public class ImagemService {
     public ImagemResponseDTO uploadImagem(Long idProduto, ImagemUploadRequestDTO imagemUploadRequestDTO ) {
 
         MultipartFile file = imagemUploadRequestDTO.getFile();
-        imageValidator.validar( file );
+        validarImagem( file );
 
         Produto produto = produtoRepository.findById( idProduto )
                 .orElseThrow( () -> new ResourceNotFoundException( "Produto não encontrado" ) );
@@ -123,7 +129,7 @@ public class ImagemService {
     @CacheEvict(value = "imagens", allEntries = true)
     public ImagemResponseDTO updateImagem(Long idImagem, ImagemUploadRequestDTO imagemUploadRequestDTO ) {
 
-        imageValidator.validar( imagemUploadRequestDTO.getFile() );
+        validarImagem( imagemUploadRequestDTO.getFile() );
         Imagem imagem = imagemRepository.findById( idImagem )
                 .orElseThrow( () -> new ResourceNotFoundException( "Imagem não encontrada" ) );
 
@@ -139,6 +145,18 @@ public class ImagemService {
         } catch ( Exception e )
         {
             throw new FileStorageException( "Erro alterar as imagens", e );
+        }
+    }
+
+    public void validarImagem(MultipartFile file) {
+        if (file == null ) {
+            throw new BusinessAlertException("Arquivo é obrigatório.");
+        }
+        if (file.isEmpty() ) {
+            throw new BusinessAlertException("Arquivo não pode ser vazio");
+        }
+        if ( !allowedTypes.contains( file.getContentType() ) ) {
+            throw new BusinessAlertException("Tipo de arquivo não permitido.");
         }
     }
 }

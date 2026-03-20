@@ -2,7 +2,7 @@ package com.project.api.ecommerce.controller.openapi;
 
 import com.project.api.ecommerce.dto.request.ImagemUploadRequestDTO;
 import com.project.api.ecommerce.dto.response.ImagemResponseDTO;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

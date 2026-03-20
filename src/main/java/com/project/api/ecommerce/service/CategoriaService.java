@@ -3,7 +3,7 @@ package com.project.api.ecommerce.service;
 import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
 import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
 import com.project.api.ecommerce.model.Produto;
-import com.project.api.ecommerce.commom.pagination.PageResponse;
+import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.dto.response.CategoriaResponseDTO;
 import com.project.api.ecommerce.exceptions.ResourceAlreadyExistsException;

@@ -1,6 +1,5 @@
-package com.project.api.ecommerce.specifications;
+package com.project.api.ecommerce.repository.specs;
 
-import com.project.api.ecommerce.commom.specifications.Specs;
 import com.project.api.ecommerce.dto.filters.ProdutoFilterDTO;
 import com.project.api.ecommerce.model.Produto;
 import org.springframework.data.jpa.domain.Specification;

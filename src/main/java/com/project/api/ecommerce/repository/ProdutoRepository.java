@@ -15,9 +15,6 @@ import java.util.Set;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long>, JpaSpecificationExecutor<Produto> {
 
-    @EntityGraph(attributePaths = "categoria")
-    Page<Produto> findAll(Specification<Produto> spec, Pageable pageable);
-
     List<Produto> findByCategoriaNome( String categoriaNome ); // acessa uma propriedade da entidade Categoria, que é nome
 
     boolean existsByNomeIgnoreCase(String nome);
