@@ -4,12 +4,15 @@ import com.project.api.ecommerce.exceptions.AuthenticationFailedException;
 import com.project.api.ecommerce.model.Usuario;
 import com.project.api.ecommerce.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserAuthenticatedService {
 
     private final UsuarioRepository usuarioRepository;
@@ -20,7 +23,7 @@ public class UserAuthenticatedService {
             throw new AuthenticationFailedException("Nenhum usuário autenticado encontrado!");
 
         if( !( authentication.getPrincipal() instanceof ShopUsuarioDetails ) )
-            throw new RuntimeException( "Erro authentication é" + authentication.getPrincipal() );
+            throw new RuntimeException( "Erro na autenticação" );
 
         ShopUsuarioDetails principal = (ShopUsuarioDetails) authentication.getPrincipal();
 

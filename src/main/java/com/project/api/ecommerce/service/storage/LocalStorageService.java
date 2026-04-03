@@ -21,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
-@Profile( "local" )
+@Profile("!prod") // Usa este service em qualquer perfil, exceto em produção
 @Slf4j
 public class LocalStorageService implements StorageService {
 

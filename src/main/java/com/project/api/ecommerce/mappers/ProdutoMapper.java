@@ -10,8 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper( componentModel = "spring", uses = CategoriaMapper.class )
 public interface ProdutoMapper {
 
-    @Mapping(target = "categoria",
-            source = "categoria")
+    @Mapping(target = "categoria", source = "categoria")
     ProdutoResponseDTO toDTO(Produto produto);
 
     @Mapping(target = "id", ignore = true)

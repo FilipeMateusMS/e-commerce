@@ -12,7 +12,6 @@ import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.repository.ImagemRepository;
 import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.service.storage.StorageService;
-import com.project.api.ecommerce.validators.ImageValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +38,7 @@ public class ImagemService {
     private final ImagemMapper imagemMapper;
 
     @Value("${app.images.allowed-types}")
-    private List<String> allowedTypes;
+    public List<String> allowedTypes;
 
     private final StorageService storageService;
 

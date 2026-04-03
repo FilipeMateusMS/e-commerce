@@ -39,7 +39,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PutMapping( "/{id}")
-    @PreAuthorize("hasRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> alterarUsuario( @PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO usuarioUpdateRequestDTO ) {
         return ResponseEntity.ok( usuarioService.alterarUsuario( usuarioUpdateRequestDTO, id ) );
     }

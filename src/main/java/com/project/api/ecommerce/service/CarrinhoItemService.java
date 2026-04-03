@@ -1,7 +1,7 @@
 package com.project.api.ecommerce.service;
 
 import com.project.api.ecommerce.dto.request.CarrinhoItemRequestDTO;
-import com.project.api.ecommerce.dto.request.CarrinhoItemResponseDTO;
+import com.project.api.ecommerce.dto.response.CarrinhoItemResponseDTO;
 import com.project.api.ecommerce.dto.request.CarrinhoItemUpdateRequestDTO;
 import com.project.api.ecommerce.exceptions.BusinessAlertException;
 import com.project.api.ecommerce.exceptions.ResourceNotFoundException;
@@ -16,8 +16,6 @@ import com.project.api.ecommerce.repository.ProdutoRepository;
 import com.project.api.ecommerce.security.user.UserAuthenticatedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,7 +83,7 @@ public class CarrinhoItemService {
             // Criou carrinho e adiciona um item
             carrinho = new Carrinho();
             carrinho.setUsuario( usuarioAutenticado );
-            carrinhoRepository.save( carrinho );
+            //carrinhoRepository.save( carrinho ); // Não precisa fazer o save aqui
 
             carrinhoItem = new CarrinhoItem( carrinho, produto, carrinhoItemDTO.quantidade() );
             carrinho.getItensCarrinho().add( carrinhoItem );

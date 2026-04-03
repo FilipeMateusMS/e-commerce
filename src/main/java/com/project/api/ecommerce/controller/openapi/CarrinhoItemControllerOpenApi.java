@@ -1,7 +1,7 @@
 package com.project.api.ecommerce.controller.openapi;
 
 import com.project.api.ecommerce.dto.request.CarrinhoItemRequestDTO;
-import com.project.api.ecommerce.dto.request.CarrinhoItemResponseDTO;
+import com.project.api.ecommerce.dto.response.CarrinhoItemResponseDTO;
 import com.project.api.ecommerce.dto.request.CarrinhoItemUpdateRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;

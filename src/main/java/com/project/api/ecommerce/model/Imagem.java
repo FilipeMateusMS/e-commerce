@@ -35,12 +35,4 @@ public class Imagem {
     @ManyToOne( fetch = FetchType.LAZY, optional = false )
     @JoinColumn( name = "produto_id", nullable = false )
     private Produto produto;
-
-//    public Imagem(Long id, String nome, String fileType, String descricao, Produto produto) {
-//        this.id = id;
-//        this.nome = nome;
-//        this.fileType = fileType;
-//        this.descricao = descricao;
-//        this.produto = produto;
-//    }
 }

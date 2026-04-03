@@ -1,13 +1,14 @@
 spring:
+  flyway:
+    enabled: false
+
   datasource:
     url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
     username: sa
     password:
+    driver-class-name: org.h2.Driver
+
   jpa:
     hibernate:
       ddl-auto: create-drop
-
-api:
-  v1:
-    prefix: /api/v1
+    database-platform: org.hibernate.dialect.H2Dialect

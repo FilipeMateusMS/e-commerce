@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode // Utilizado pelo Spring cache para comparar a SpringKey
-@ToString // Utilizado pelo Spring cache para criar a SpringKey
+@ToString
 public class ProdutoFilterDTO {
     private String nome;
     private String marca;

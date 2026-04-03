@@ -5,10 +5,10 @@ INSERT INTO role (nome) VALUES ('USER');
 -- USUARIOS
 -- senha = 123456 (BCrypt)
 INSERT INTO usuario (nome, email, senha, telefone) VALUES
-('Administrador', 'admin@email.com', '$2a$10$Dow1lFJYxYk2qkF6J8S6VuXrQq6QJzYQh1F2gk6Y9Z3q2g7mV6L2e', '11999999999'),
-('Carlos Silva', 'carlos@email.com', '$2a$10$Dow1lFJYxYk2qkF6J8S6VuXrQq6QJzYQh1F2gk6Y9Z3q2g7mV6L2e', '11988888888'),
-('Ana Souza', 'ana@email.com', '$2a$10$Dow1lFJYxYk2qkF6J8S6VuXrQq6QJzYQh1F2gk6Y9Z3q2g7mV6L2e', '11977777777'),
-('João Lima', 'joao@email.com', '$2a$10$Dow1lFJYxYk2qkF6J8S6VuXrQq6QJzYQh1F2gk6Y9Z3q2g7mV6L2e', '11966666666');
+('Administrador', 'admin@email.com', '$2a$10$wjtE9KgtjX0X9.fC2S5d2uN9Ebio8BDRuGEG.0m7D9iLZwx..zbB2', '11999999999'),
+('Carlos Silva', 'carlos@email.com', '$2a$10$wjtE9KgtjX0X9.fC2S5d2uN9Ebio8BDRuGEG.0m7D9iLZwx..zbB2', '11988888888'),
+('Ana Souza', 'ana@email.com', '$2a$10$wjtE9KgtjX0X9.fC2S5d2uN9Ebio8BDRuGEG.0m7D9iLZwx..zbB2', '11977777777'),
+('João Lima', 'joao@email.com', '$2a$10$wjtE9KgtjX0X9.fC2S5d2uN9Ebio8BDRuGEG.0m7D9iLZwx..zbB2', '11966666666');
 
 -- USUARIO_ROLES
 INSERT INTO user_roles (user_id, role_id) VALUES
