@@ -77,7 +77,7 @@ class UsuarioServiceTest {
     @Test
     @DisplayName("Deve criar um novo usuário, criptografar a senha e validar a unicidade do nome")
     void deveCriarUsuarioComSucesso() {
-        UsuarioRequestDTO request = new UsuarioRequestDTO("User 1", "user1@gmail.com", "12345678");
+        UsuarioRequestDTO request = new UsuarioRequestDTO("User 1", "user1@gmail.com", "44 99999-9999", "12345678");
 
         Usuario usuario = new Usuario();
         Usuario usuarioSalvo = new Usuario();

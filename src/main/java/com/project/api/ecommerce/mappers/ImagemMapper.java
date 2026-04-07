@@ -16,9 +16,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Mapper(componentModel = "spring")
-@Slf4j
 public abstract class ImagemMapper {
 
+    @Autowired
     protected StorageService storageService;
 
     // O Mapping chama o serviço

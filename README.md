@@ -10,7 +10,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 * **Linguagem:** Java 21+
 * **Framework:** Spring Boot 3
-* **Conversão de DTO's':** Map Struct
+* **Conversão de DTO's:** Map Struct
 * **Persistência:** Spring Data JPA / MySQL
 * **Testes:** JUnit / Mockito
 * **Containerização:** Docker & Docker Compose
@@ -58,7 +58,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
 Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/e-commerce-api.git
+git clone https://github.com/FilipeMateusMS/e-commerce.git
 ```
 
 Acesse a pasta do projeto:
@@ -149,8 +149,8 @@ Query params disponíveis em GET /api/v1/categorias
 
 ## Usuários
 | Método | Endpoint                | Auth | Role        | Descrição                          |
-| ------ | ----------------------- | ---- | ----------- | ---------------------------------- |
-| GET    | `/api/v1/usuarios/{id}` | ✅    | USER        | Busca um usuário pelo ID           |
+| ------ | ----------------------- | ---- |-------------| ---------------------------------- |
+| GET    | `/api/v1/usuarios/{id}` | ✅    | USER, ADMIN | Busca um usuário pelo ID           |
 | GET    | `/api/v1/usuarios`      | ✅    | ADMIN       | Lista todos os usuários (paginado) |
 | POST   | `/api/v1/usuarios`      | ✅    | ADMIN       | Cria um novo usuário               |
 | PUT    | `/api/v1/usuarios/{id}` | ✅    | USER, ADMIN | Atualiza os dados de um usuário    |

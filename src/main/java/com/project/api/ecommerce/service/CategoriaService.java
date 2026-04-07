@@ -2,6 +2,7 @@ package com.project.api.ecommerce.service;
 
 import com.project.api.ecommerce.dto.request.CategoriaCreateRequestDTO;
 import com.project.api.ecommerce.dto.request.CategoriaUpdateRequestDTO;
+import com.project.api.ecommerce.exceptions.BusinessAlertException;
 import com.project.api.ecommerce.model.Produto;
 import com.project.api.ecommerce.dto.response.PageResponse;
 import com.project.api.ecommerce.repository.ProdutoRepository;
@@ -114,8 +115,13 @@ public class CategoriaService {
 
     @CacheEvict(value = "categorias", allEntries = true)
     public void deleteCategoriaById(Long id) {
-        categoriaRepository.findById( id ).ifPresentOrElse( categoriaRepository::delete, () -> {
-                    throw new ResourceNotFoundException( "Categoria não encontrada" );
-        });
+        Optional<Categoria> categoriaOptional = categoriaRepository.findById( id );
+        if( categoriaOptional.isEmpty() )
+            throw new ResourceNotFoundException( "Categoria não encontrada" );
+        Categoria categoria = categoriaOptional.get();
+        if( !categoria.getProdutos().isEmpty() )
+            throw new BusinessAlertException( "Categoria não pode ser excluida, pois possui produtos relacionados" );
+
+        categoriaRepository.delete( categoria );
     }
 }

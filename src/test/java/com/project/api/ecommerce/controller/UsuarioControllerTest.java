@@ -79,14 +79,6 @@ class UsuarioControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar 403 para ADMIN acessar endpoint de USER")
-    @WithMockUser(authorities = "ADMIN")
-    void deveRetornar403Admin() throws Exception {
-        mockMvc.perform(get(URL + "/1"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     @DisplayName("Deve retornar 401 sem autenticação")
     void deveRetornar401() throws Exception {
 
@@ -126,7 +118,7 @@ class UsuarioControllerTest {
     @WithMockUser(authorities = "ADMIN")
     void deveCriarUsuario() throws Exception {
 
-        UsuarioRequestDTO request = new UsuarioRequestDTO("Maria", "maria@email.com", "123456");
+        UsuarioRequestDTO request = new UsuarioRequestDTO("Maria", "maria@email.com", "44 9999-9999","123456");
 
         when(usuarioService.criarUsuario(any()))
                 .thenReturn(new UsuarioResponseDTO(2L, "Maria", "maria@email.com"));
@@ -148,6 +140,7 @@ class UsuarioControllerTest {
         UsuarioRequestDTO request = new UsuarioRequestDTO(
                 "Maria",
                 "email",
+                "44 99999-9999",
                 "123"
         );
 

@@ -21,7 +21,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     private final UsuarioService usuarioService;
 
     @GetMapping( "/{id}" )
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> getUsuarioById(@PathVariable Long id ) {
         return ResponseEntity.ok( usuarioService.findUsuarioById( id ) );
     }

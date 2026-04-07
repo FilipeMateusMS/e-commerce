@@ -93,12 +93,16 @@ public class CarrinhoItemService {
     }
 
     public CarrinhoItemResponseDTO alterarQuantidade( Long idCarrinhoItem, CarrinhoItemUpdateRequestDTO carrinhoItemUpdateDTO ){
+
+        if( carrinhoItemUpdateDTO.quantidade() == 0 )
+            throw new BusinessAlertException( "Quantidade não pode ser 0");
+
         CarrinhoItem carrinhoItem = carrinhoItemRepository.findById( idCarrinhoItem )
                         .orElseThrow(() -> new ResourceNotFoundException( "Carrinho não encontrado" ) );
         Produto produto = carrinhoItem.getProduto();
 
         if( produto.getQuantidade() - carrinhoItemUpdateDTO.quantidade() <= 0 )
-            throw new BusinessAlertException( "Quantidade do produto deve ser maior do que 0" );
+            throw new BusinessAlertException( "Quantidade do produto não pode ser maior que o estoque do produto" );
 
         carrinhoItem.setQuantidade( carrinhoItemUpdateDTO.quantidade() );
 
