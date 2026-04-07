@@ -35,7 +35,7 @@ public class ProdutoService {
     private final CategoriaRepository categoriaRepository;
     private final ProdutoMapper produtoMapper;
 
-    @Cacheable( value = "produtos", key = "#id" )
+    @Cacheable( value = "produtos-item", key = "#id" )
     public ProdutoResponseDTO getProdutoById(Long id) {
         Produto produto = produtoRepository.findById( id )
                 .orElseThrow( () -> new ResourceNotFoundException( "Produto não encontrado" ) );
@@ -44,7 +44,7 @@ public class ProdutoService {
 
     // Chave composta
     @Cacheable(
-            value = "produtos",
+            value = "produtos-lista",
             key = "#produtoSearchDTO.toString() + '-' + #pageable.pageNumber + '-' + #pageable.pageSize.toString() + '-' + #pageable.sort.toString()",
             condition = "#pageable.pageNumber == 0"  // Só armazena no Cache a primeira página
     )
@@ -60,7 +60,8 @@ public class ProdutoService {
         Se o produto veio com a categoria verifica se existe a categoria
         Se existir a categoria insere com a categoria existente, senão cria uma categoria
      */
-    @Caching( evict = { @CacheEvict(value = "produtos", allEntries = true),
+    @Caching( evict = {
+                        @CacheEvict(value = "produtos-lista", allEntries = true),
                         @CacheEvict(value = "categorias", allEntries = true) })
     public ProdutoResponseDTO insertProduto(ProdutoRequestDTO produtoDTO ) {
         Categoria categoria = obterOuSalvar( produtoDTO.nomeCategoria() );
@@ -72,7 +73,8 @@ public class ProdutoService {
         return produtoMapper.toDTO( produtoRepository.save( produto ) );
     }
 
-    @Caching(evict = { @CacheEvict(value = "produtos", allEntries = true ),
+    @Caching(evict = { @CacheEvict(value = "produtos-item", key = "#id" ),
+                       @CacheEvict(value = "produtos-lista", allEntries = true ),
                        @CacheEvict(value = "categorias", allEntries = true) })
     public void deleteProdutoById(Long id) {
         if( !produtoRepository.existsById( id ) )
@@ -81,7 +83,8 @@ public class ProdutoService {
     }
 
     @Transactional
-    @Caching( evict = { @CacheEvict(value = "produtos", allEntries = true ),
+    @Caching( evict = { @CacheEvict(value = "produtos-item", key = "#id" ),
+                        @CacheEvict(value = "produtos-lista", allEntries = true ),
                         @CacheEvict(value = "categorias", allEntries = true) } )
     public ProdutoResponseDTO updateProduto(Long id, ProdutoRequestDTO produtoRequest ) {
         return produtoRepository.findById( id )

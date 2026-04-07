@@ -53,8 +53,10 @@ public class PedidoService {
     }
 
     @Transactional
-    @Caching(evict = { @CacheEvict(value = "pedidos", allEntries = true),
-                       @CacheEvict(value = "produtos", allEntries = true) // Estoque mudou
+    @Caching(evict = {
+            @CacheEvict(value = "pedidos-item", allEntries = true),
+            @CacheEvict(value = "produtos-item", allEntries = true),
+            @CacheEvict(value = "produtos-lista", allEntries = true)
     })
     public PedidoResponseDTO finalizarPedido(){
         Usuario usuario = userAuthenticatedService.getAuthenticatedUser();
@@ -90,7 +92,7 @@ public class PedidoService {
     }
 
     @Transactional
-    @CacheEvict(value = "pedidos", allEntries = true)
+    @CacheEvict(value = "pedidos-item", allEntries = true)
     public PedidoResponseDTO alterarPedidoStatus(Long idPedido, PedidoStatusDTO pedidoStatusDTO ) {
         Pedido pedido = pedidoRepository.findById( idPedido )
                 .orElseThrow( () -> new ResourceNotFoundException( "Pedido não encontrado" ) );

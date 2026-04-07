@@ -33,14 +33,14 @@ public class CategoriaService {
     private final CategoriaMapper categoriaMapper;
     private final ProdutoRepository produtoRepository;
 
-    @Cacheable(value = "categorias", key = "#id")
+    @Cacheable(value = "categorias-item", key = "#id")
     public CategoriaResponseDTO findCategoriaById(Long id) {
         return categoriaMapper.toDTO( categoriaRepository.findById( id )
                 .orElseThrow( () -> new ResourceNotFoundException( "Categoria não encontrada" ) ) );
     }
 
     @Cacheable(
-            value = "categorias",
+            value = "categorias-lista",
             key = "#nome + '-page=' + #pageable.pageNumber + '-size=' + #pageable.pageSize + '-sort=' + #pageable.sort.toString()"
     )
     public PageResponse<CategoriaResponseDTO> findAllByContendoNome( String nome, Pageable pageable ) {
@@ -51,7 +51,9 @@ public class CategoriaService {
         return PageResponse.of( page.map( categoriaMapper::toDTO ) );
     }
 
-    @CacheEvict(value = "categorias", allEntries = true)
+    @Caching( evict ={@CacheEvict(value = "categorias-lista", allEntries = true),
+                    @CacheEvict(value = "produtos-lista", allEntries = true ),
+                    @CacheEvict(value = "produtos-item", allEntries = true ) } )
     public CategoriaResponseDTO addCategoria( CategoriaCreateRequestDTO categoriaDTO ) {
         if( categoriaRepository.existsByNome( categoriaDTO.nome() ) )
             throw new ResourceAlreadyExistsException( "Categoria '" + categoriaDTO.nome() + "' já existe" );
@@ -61,8 +63,10 @@ public class CategoriaService {
     }
 
     @Transactional
-    @Caching(evict = { @CacheEvict(value = "categorias", allEntries = true),
-                       @CacheEvict(value = "produtos", allEntries = true ) })
+    @Caching(evict = { @CacheEvict(value = "categorias-item", key = "#categoriaId"),
+                       @CacheEvict(value = "categorias-lista", allEntries = true),
+                       @CacheEvict(value = "produtos-lista", allEntries = true ),
+                       @CacheEvict(value = "produtos-item", allEntries = true ) } )
     public void adicionarProdutoNaCategoria( Long categoriaId, Long produtoId ) {
         Categoria categoria = categoriaRepository.findById( categoriaId )
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
@@ -79,7 +83,10 @@ public class CategoriaService {
     }
 
     @Transactional
-    @CacheEvict(value = "categorias", allEntries = true)
+    @Caching(evict = { @CacheEvict(value = "categorias-item", key = "#id"),
+            @CacheEvict(value = "categorias-lista", allEntries = true),
+            @CacheEvict(value = "produtos-lista", allEntries = true ),
+            @CacheEvict(value = "produtos-item", allEntries = true ) })
     public CategoriaResponseDTO updateCategoria( Long id, CategoriaUpdateRequestDTO categoriaDTO ) {
         Categoria categoria = categoriaRepository.findById( id )
                 .orElseThrow(() -> new ResourceNotFoundException( "Categoria não encontrada" ) );
@@ -113,7 +120,9 @@ public class CategoriaService {
         return produtos;
     }
 
-    @CacheEvict(value = "categorias", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "categorias-item", key = "#id"),
+            @CacheEvict(value = "categorias-lista", allEntries = true) } )
     public void deleteCategoriaById(Long id) {
         Optional<Categoria> categoriaOptional = categoriaRepository.findById( id );
         if( categoriaOptional.isEmpty() )

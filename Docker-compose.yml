@@ -33,7 +33,7 @@ services:
 
   app:
     build: .
-    container_name: ecommerce-api-container
+    container_name: ecommerce-api-container:1.0.0
     depends_on:
       db:
         condition: service_healthy #Garante que o BD suba antes da aplicação
